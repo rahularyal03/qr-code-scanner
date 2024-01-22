@@ -10,11 +10,10 @@ export default function Camera({ name }) {
   // console.log(process.env.URL)
   const videoRef = useRef(null);
   const [data, setData] = useState(null);
-  const [cameraOn, setCameraOn] = useState(true);
 
   useEffect(() => {
     const qrScanner = new QrScanner((videoRef.current), (result) => {
-      if (cameraOn) {
+
         const detailedResult = result && result.result ? result.result : result;
         console.log('Decoded QR code:', detailedResult);
         setData(detailedResult);
@@ -55,11 +54,7 @@ export default function Camera({ name }) {
           // console.log(cameraOn)
           if (response && response.status == 201) {
             toast.success(response.Message)
-            setCameraOn(false)
-            setTimeout( ()=>setCameraOn(true), 4000);  
-
-
-
+         
           }
 
 
@@ -72,14 +67,15 @@ export default function Camera({ name }) {
 
       }
 
-    }, [data]);
+    , [data]);
 
     qrScanner.start();
 
     return () => {
       qrScanner.stop();
     };
-  }, [data, name, cameraOn]);
+  }
+  , [data, name]);
 
   return (
     <section className="inc-mainbox">
