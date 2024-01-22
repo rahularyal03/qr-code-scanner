@@ -30,7 +30,7 @@ def add_stocks():
                 "error": "Missing type",
                 "status": 400
             }), 400
-
+      
         check_stock = Stock.find_by_product_type(product_type)
 
         if not check_stock:

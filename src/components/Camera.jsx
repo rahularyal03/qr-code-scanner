@@ -4,40 +4,90 @@ import QrScanner from 'qr-scanner';
 import 'qr-scanner/qr-scanner-worker.min';
 
 import '@/app/globals.css';
+import { toast } from 'react-toastify';
 
-export default function Camera({name}) {
-  console.log(name)
+export default function Camera({ name }) {
+  // console.log(process.env.URL)
   const videoRef = useRef(null);
-  const[data, setData] = useState(null)
+  const [data, setData] = useState(null);
+  const [cameraOn, setCameraOn] = useState(true);
 
   useEffect(() => {
-    const qrScanner = new QrScanner(videoRef.current, (result) => {
-      // Check if the detailed scan result is provided
-      const detailedResult = result && result.result ? result.result : result;
-      console.log('Decoded QR code:', detailedResult);
-      setData(detailedResult)
+    const qrScanner = new QrScanner((videoRef.current), (result) => {
+      if (cameraOn) {
+        const detailedResult = result && result.result ? result.result : result;
+        console.log('Decoded QR code:', detailedResult);
+        setData(detailedResult);
 
-    });
+        let parsedData;
+        try {
+          if (data) {
+            parsedData = JSON.parse(data?.data);
+
+          }
+        }
+
+        catch (error) {
+          toast.error(error.message);
+          console.log("Hey" + error.message)
+        }
 
 
-    // Start the QR scanner
+        // console.log(parsedData.type)
+
+        const apiFetching = async () => {
+
+          let response = await fetch("http://127.0.0.1:4020/stockapi/stocks", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              type: parsedData?.type,
+              stocks: parsedData?.quantity,
+              production_type: parsedData?.product,
+            }),
+          });
+
+          response = await response.json();
+
+          // console.log(response)
+          // console.log(cameraOn)
+          if (response && response.status == 201) {
+            toast.success(response.Message)
+            setCameraOn(false)
+            setTimeout( ()=>setCameraOn(true), 4000);  
+
+
+
+          }
+
+
+          else {
+            toast.error(response.message)
+          }
+        };
+
+        apiFetching();
+
+      }
+
+    }, [data]);
+
     qrScanner.start();
 
-    // Clean up: stop the QR scanner when the component unmounts
     return () => {
       qrScanner.stop();
     };
-  }, []); // Empty dependency array ensures the effect runs only once on mount
+  }, [data, name, cameraOn]);
 
   return (
     <section className="inc-mainbox">
       <div className="inc-subbox">
         <p className="inc-heading">QR Scanner: {name}</p>
         <div className="inc-cambox">
-          {/* Reference the video element using useRef */}
           <video ref={videoRef} className="inc-camera"></video>
         </div>
-        <p>{data}</p>
       </div>
     </section>
   );
