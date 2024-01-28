@@ -71,7 +71,7 @@
   align-items: center;
   /* width: 100vw; */
   height: 90vh;
-  background-color: antiquewhite;
+  background-color: white;
 
 }
 
@@ -90,25 +90,25 @@
   margin: 10px;
   font-size: 30px;
   font-weight: 600;
+  color: black;
 
 }
 
 .inc-cambox{
-  border: 2px solid black;
   width: 70% ;
   height: auto;
   margin: 5px;
   box-shadow: 1px 1px 9px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+  border:none;
+  border-radius: 20px;
+ 
 }
 
 .inc-camera{
 height: 100%;
-width:100%
-
+width:100%;
+background-color: black;
+border-radius: 20px;
 }
 
 

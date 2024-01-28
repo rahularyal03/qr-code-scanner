@@ -146,6 +146,7 @@ export default function Camera({ name }) {
       <div className="inc-subbox">
         <p className="inc-heading">QR Scanner: {name}</p>
         <div className="inc-cambox">
+        
           <video ref={videoRef} className="inc-camera"></video>
         </div>
       </div>
