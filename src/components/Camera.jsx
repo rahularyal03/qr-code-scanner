@@ -7,7 +7,6 @@ import '@/app/globals.css';
 import { toast } from 'react-toastify';
 
 export default function Camera({ name }) {
-  // console.log(process.env.URL)
   const videoRef = useRef(null);
   const [data, setData] = useState(null);
   const [cameraOn, setCameraOn] = useState(true)
@@ -43,7 +42,7 @@ export default function Camera({ name }) {
               body: JSON.stringify({
                 _id: parsedData?._id,
                 stocks: quantity,
-                product_type: parsedData?.product,
+                product_type: parsedData?.product_type,
                 type: increment,
                 manufacturing_date: parsedData?.manufacturing_date,
                 expdate: parsedData?.expiry_date
@@ -106,7 +105,7 @@ export default function Camera({ name }) {
               body: JSON.stringify({
                 _id: parsedData?._id,
                 stocks: quantity,
-                product_type: parsedData?.product,
+                product_type: parsedData?.product_type,
                 type: increment,
                 manufacturing_date: parsedData?.manufacturing_date,
                 expdate: parsedData?.expiry_date
