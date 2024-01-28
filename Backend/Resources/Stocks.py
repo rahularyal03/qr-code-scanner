@@ -52,15 +52,13 @@ def add_stocks():
         if not check_stock:
             if type == Decrement and stocks < 0:
                 return jsonify({
-                    "description": "No data found for Decrement",
-                    "error": "No data found for Decrement",
+                    "Message":"No stock found to decrement",
                     "status": 403
                 }), 403
 
         if not stocks:
             return jsonify({
-                "description": "Missing stocks",
-                "error": "Missing stocks",
+               "Message": "No Stock Found",
                 "status": 400
             }), 400
 

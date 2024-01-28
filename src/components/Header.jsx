@@ -11,7 +11,7 @@ export default function Header(){
                             <li className="head-link"><Link href= "/" >Home</Link></li>
                             <li className="head-link"><Link href= "/increment" >Increment</Link></li>
                             <li className="head-link"><Link href= "/decrement" >Decrement</Link></li>
-                            <li className="head-link"><Link href= "/products" >Product lists</Link></li>
+                            {/* <li className="head-link"><Link href= "/products" >Product lists</Link></li> */}
                         </ul>
                     </nav>
                 </div>

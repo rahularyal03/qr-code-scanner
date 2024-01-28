@@ -11,149 +11,135 @@ export default function Camera({ name }) {
   const videoRef = useRef(null);
   const [data, setData] = useState(null);
   const [cameraOn, setCameraOn] = useState(true)
+
   useEffect(() => {
-    if(name == "Increment"){
+    
+    if (name == "Increment") {
       if (cameraOn) {
 
-
-        const qrScanner = new QrScanner((videoRef.current), (result) => {
+          const qrScanner = new QrScanner((videoRef.current), (result) => {
           const detailedResult = result && result.result ? result.result : result;
-  
-        setCameraOn(false)
+
           const increment = "increment";
-          const quantity = "1";
+          const quantity = 1;
           console.log('Decoded QR code:', detailedResult);
           setData(detailedResult);
-  
+
           let parsedData;
-          try {
-            if (data) {
-              parsedData = JSON.parse(data?.data);
-  
-            }
+
+          if (data) {
+            parsedData = JSON.parse(data?.data);
+            console.log(parsedData)
+
           }
-  
-          catch (error) {
-            toast.error(error.message);
-            console.log("Hey" + error.message)
-          }
-          
+
           const apiFetching = async () => {
-  
+
             let response = await fetch("http://127.0.0.1:4020/stockapi/stocks", {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                type: increment,
+                _id: parsedData?._id,
                 stocks: quantity,
                 product_type: parsedData?.product,
+                type: increment,
+                manufacturing_date: parsedData?.manufacturing_date,
+                expdate: parsedData?.expiry_date
               }),
             });
-  
+
             response = await response.json();
-  
-            if (response && response.status == 201) {
+
+            if (response) {
               toast.success(response.Message)
-  
+
             }
-  
-            else {
-              toast.error(response.message)
-            }
+
           };
-          
           apiFetching();
+        setCameraOn(false)
 
 
         }
-
           , [data]);
-  
+
         qrScanner.start();
         return () => {
           qrScanner.stop();
 
         };
-  
-      }
 
-      setTimeout(() => setCameraOn(true), 3000)
-  
+      }
+      setTimeout(() => setCameraOn(true), 2000)
+
+
     }
 
-    if (cameraOn) {
 
+    else {
+      if (cameraOn) {
+        
+          const qrScanner = new QrScanner((videoRef.current), (result) => {
+          const detailedResult = result && result.result ? result.result : result;
+          const increment = "decrement";
+          const quantity = -1;
+          console.log('Decoded QR code:', detailedResult);
+          setData(detailedResult);
 
-      const qrScanner = new QrScanner((videoRef.current), (result) => {
-        const detailedResult = result && result.result ? result.result : result;
+          let parsedData;
 
-      setCameraOn(false)
-        const increment = "decrement";
-        const quantity = "1";
-        console.log('Decoded QR code:', detailedResult);
-        setData(detailedResult);
-
-        let parsedData;
-        try {
           if (data) {
             parsedData = JSON.parse(data?.data);
+            console.log(parsedData)
 
           }
+
+          const apiFetching = async () => {
+
+            let response = await fetch("http://127.0.0.1:4020/stockapi/stocks", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                _id: parsedData?._id,
+                stocks: quantity,
+                product_type: parsedData?.product,
+                type: increment,
+                manufacturing_date: parsedData?.manufacturing_date,
+                expdate: parsedData?.expiry_date
+              }),
+            });
+
+            response = await response.json();
+
+            if (response) {
+              toast.success(response.Message)
+
+
+            }
+
+          };
+          apiFetching();
+          setCameraOn(false)
+
         }
+          , [data]);
 
-        catch (error) {
-          toast.error(error.message);
-          console.log("Hey" + error.message)
-        }
-        
-        const apiFetching = async () => {
+        qrScanner.start();
+        return () => {
+          qrScanner.stop();
 
-          let response = await fetch("http://127.0.0.1:4020/stockapi/stocks", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              type: increment,
-              stocks: quantity,
-              product_type: parsedData?.product,
-            }),
-          });
-
-          response = await response.json();
-
-          if (response && response.status == 201) {
-            toast.success(response.Message)
-
-          }
-
-          else {
-            toast.error(response.message)
-          }
         };
-        
-        apiFetching();
-
 
       }
-
-        , [data]);
-
-      qrScanner.start();
-      return () => {
-        qrScanner.stop();
-
-      };
-
+      setTimeout(() => setCameraOn(true), 2000)
     }
+  }
 
-    setTimeout(() => setCameraOn(true), 3000)
-
-    }
-
-    , [data, cameraOn]);
+    , [cameraOn]);
 
   return (
     <section className="inc-mainbox">
